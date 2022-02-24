@@ -14,6 +14,12 @@ public class ArrayTaskList {
     }
 
     public void add(Task task) {
+        if(task == null) {
+            throw new IllegalArgumentException(
+                    "Task object parameter has null value!"
+            );
+        }
+
         if(taskArr.length == taskAmount) {
             Task[] tempArr = new Task[taskAmount + RESIZE_INTERVAL];
 
@@ -26,6 +32,12 @@ public class ArrayTaskList {
     }
 
     public boolean remove(Task task) {
+        if(task == null) {
+            throw new IllegalArgumentException(
+                    "Task object parameter has null value!"
+            );
+        }
+
         boolean searchStatus = false;
         int delIndex;
 
@@ -67,10 +79,22 @@ public class ArrayTaskList {
      * After using remove task method indexes of specific objects can change.
      */
     public Task getTask(int index) {
+        if(index < 0 || index >= taskAmount) {
+            throw new IndexOutOfBoundsException(
+                    "Invalid ArrayTaskList index!"
+            );
+        }
+
         return taskArr[index];
     }
 
     public ArrayTaskList incoming(int from, int to) {
+        if(from > to) {
+            throw new IllegalArgumentException(
+                    "Invalid interval parameters!"
+            );
+        }
+
         int nextTaskTime;
         ArrayTaskList returnArr = new ArrayTaskList();
 

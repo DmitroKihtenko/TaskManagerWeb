@@ -42,6 +42,7 @@ public class Task {
      * Constructor for non repeated tasks (task activity defaults as false).
      * @param title title of the task
      * @param time time of completion of the task
+     * @exception IllegalArgumentException if time parameter has negative value
      * @see Task#Task(String, int, int, int) constructor for repeated tasks
      */
     public Task(String title, int time) {
@@ -55,6 +56,7 @@ public class Task {
      * @param start start time of completion period
      * @param end end time of completion period
      * @param interval interval of task completion
+     * @exception IllegalArgumentException if start time more or equal end time or interval is non-positive
      * @see Task#Task(String, int) constructor for non-repeated tasks
      */
     public Task(String title, int start, int end, int interval) {
@@ -105,9 +107,16 @@ public class Task {
     /**
      * Setter for completion time of non-repeated task (sets task as non-repeated).
      * @param time completion time for non-repeated task
+     * @exception IllegalArgumentException if time parameter has negative value
      * @see Task#setTime(int, int, int) setter for repeated task
      */
     public void setTime(int time) {
+        if(time < 0) {
+            throw new IllegalArgumentException(
+                    "Negative time parameter!"
+            );
+        }
+
         this.start = time;
 
         if(this.isPeriodical) {
@@ -120,9 +129,16 @@ public class Task {
      * @param start start time of completion period
      * @param end end time of completion period
      * @param interval interval of task completion
+     * @exception IllegalArgumentException if start time more or equal end time or interval is non-positive
      * @see Task#setTime(int) setter for non-repeated task
      */
     public void setTime(int start, int end, int interval) {
+        if(start >= end || interval <= 0) {
+            throw new IllegalArgumentException(
+                    "Interval parameters error!"
+            );
+        }
+
         this.start = start;
         this.end = end;
         this.interval = interval;
@@ -173,9 +189,16 @@ public class Task {
     /**
      * Method that returns next time of task completion after given time.
      * @param current the time relative to which you want to find the completion time
+     * @exception IllegalArgumentException if time parameter has negative value
      * @return time of next task completion after current time. If task is not active returns 0. If task will not run after current time returns 0
      */
     public int nextTimeAfter(int current) {
+        if(current < 0) {
+            throw new IllegalArgumentException(
+                    "Negative time parameter!"
+            );
+        }
+
         if(!this.isActive) {
             return -1;
         }
