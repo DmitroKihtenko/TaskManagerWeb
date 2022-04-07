@@ -1,6 +1,6 @@
 package ua.edu.sumdu.j2se.kikhtenkoDmytro.tasks;
 
-public class LinkedTaskList {
+public class LinkedTaskList extends AbstractTaskList {
     /**
      * Saving cell class for linked list node.
      */
@@ -16,6 +16,7 @@ public class LinkedTaskList {
         first = new LinkedListPointer();
     }
 
+    @Override
     public void add(Task task) {
         if(task == null) {
             throw new IllegalArgumentException(
@@ -33,6 +34,7 @@ public class LinkedTaskList {
         size++;
     }
 
+    @Override
     public boolean remove(Task task) {
         if(task == null) {
             throw new IllegalArgumentException(
@@ -61,6 +63,7 @@ public class LinkedTaskList {
         return false;
     }
 
+    @Override
     public int size() {
         return size;
     }
@@ -68,6 +71,7 @@ public class LinkedTaskList {
     /**
      * Any task adds to begin of list so task indexes is reversed
      */
+    @Override
     public Task getTask(int index) {
         if(index < 0 || index >= size) {
             throw new IndexOutOfBoundsException(
@@ -83,29 +87,5 @@ public class LinkedTaskList {
         }
 
         return searchPointer.storedTask;
-    }
-
-    public LinkedTaskList incoming(int from, int to) {
-        if(from > to) {
-            throw new IllegalArgumentException(
-                    "Invalid interval parameters!"
-            );
-        }
-
-        int nextTaskTime;
-        LinkedListPointer searchPointer = new LinkedListPointer();
-        LinkedTaskList returnList = new LinkedTaskList();
-
-        while(searchPointer.next != null) {
-            searchPointer = searchPointer.next;
-
-            nextTaskTime = searchPointer.storedTask.nextTimeAfter(from);
-
-            if(nextTaskTime != -1 && nextTaskTime < to) {
-                returnList.add(searchPointer.storedTask);
-            }
-        }
-
-        return returnList;
     }
 }

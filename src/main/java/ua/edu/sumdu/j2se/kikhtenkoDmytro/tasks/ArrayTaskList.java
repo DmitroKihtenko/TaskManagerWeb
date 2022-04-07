@@ -1,6 +1,6 @@
 package ua.edu.sumdu.j2se.kikhtenkoDmytro.tasks;
 
-public class ArrayTaskList {
+public class ArrayTaskList extends AbstractTaskList {
     /**
      * Amount of added or deleted tasks after which the array memory is changed.
      */
@@ -13,6 +13,7 @@ public class ArrayTaskList {
         taskArr = new Task[RESIZE_INTERVAL];
     }
 
+    @Override
     public void add(Task task) {
         if(task == null) {
             throw new IllegalArgumentException(
@@ -31,6 +32,7 @@ public class ArrayTaskList {
         taskAmount++;
     }
 
+    @Override
     public boolean remove(Task task) {
         if(task == null) {
             throw new IllegalArgumentException(
@@ -71,6 +73,7 @@ public class ArrayTaskList {
         return true;
     }
 
+    @Override
     public int size() {
         return taskAmount;
     }
@@ -78,6 +81,7 @@ public class ArrayTaskList {
     /**
      * After using remove task method indexes of specific objects can change.
      */
+    @Override
     public Task getTask(int index) {
         if(index < 0 || index >= taskAmount) {
             throw new IndexOutOfBoundsException(
@@ -86,26 +90,5 @@ public class ArrayTaskList {
         }
 
         return taskArr[index];
-    }
-
-    public ArrayTaskList incoming(int from, int to) {
-        if(from > to) {
-            throw new IllegalArgumentException(
-                    "Invalid interval parameters!"
-            );
-        }
-
-        int nextTaskTime;
-        ArrayTaskList returnArr = new ArrayTaskList();
-
-        for(short index = 0; index < taskAmount; index++) {
-            nextTaskTime = taskArr[index].nextTimeAfter(from);
-
-            if(nextTaskTime != -1 && nextTaskTime < to) {
-                returnArr.add(taskArr[index]);
-            }
-        }
-
-        return returnArr;
     }
 }
