@@ -1,5 +1,8 @@
 package ua.edu.sumdu.j2se.kikhtenkoDmytro.tasks;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class LinkedTaskList extends AbstractTaskList {
     /**
      * Saving cell class for linked list node.
@@ -9,8 +12,11 @@ public class LinkedTaskList extends AbstractTaskList {
         LinkedListPointer next;
     }
 
-    private int size;
     private LinkedListPointer first;
+
+    static {
+        type = ListTypes.types.LINKED;
+    }
 
     public LinkedTaskList() {
         first = new LinkedListPointer();
@@ -31,7 +37,7 @@ public class LinkedTaskList extends AbstractTaskList {
         first = new LinkedListPointer();
         first.next = tempPointer;
 
-        size++;
+        taskAmount++;
     }
 
     @Override
@@ -44,7 +50,7 @@ public class LinkedTaskList extends AbstractTaskList {
 
         LinkedListPointer searchPointer = first;
 
-        if(size == 0) {
+        if(taskAmount == 0) {
             return false;
         }
 
@@ -52,7 +58,7 @@ public class LinkedTaskList extends AbstractTaskList {
             if(searchPointer.next.storedTask.equals(task)) {
                 searchPointer.next = searchPointer.next.next;
 
-                size--;
+                taskAmount--;
 
                 return true;
             }
@@ -63,17 +69,12 @@ public class LinkedTaskList extends AbstractTaskList {
         return false;
     }
 
-    @Override
-    public int size() {
-        return size;
-    }
-
     /**
      * Any task adds to begin of list so task indexes is reversed
      */
     @Override
     public Task getTask(int index) {
-        if(index < 0 || index >= size) {
+        if(index < 0 || index >= taskAmount) {
             throw new IndexOutOfBoundsException(
                     "Invalid LinkedTaskList index parameter!"
             );
@@ -82,10 +83,59 @@ public class LinkedTaskList extends AbstractTaskList {
         index++;
         LinkedListPointer searchPointer = first;
 
-        for(int counter = size; counter > size - index; counter--) {
+        for(int counter = taskAmount; counter > taskAmount - index; counter--) {
             searchPointer = searchPointer.next;
         }
 
         return searchPointer.storedTask;
+    }
+
+    public Iterator<Task> iterator() {
+        return new Iterator<>() {
+            private LinkedListPointer node = first.next;
+            private LinkedListPointer deleteNode = first;
+
+            @Override
+            public boolean hasNext() {
+                return node != null;
+            }
+
+            @Override
+            public Task next() {
+                if(node == null) {
+                    throw new NoSuchElementException(
+                            "Iterator reached last position!"
+                    );
+                }
+                if(deleteNode.next.next == node) {
+                    deleteNode = deleteNode.next;
+                }
+                node = node.next;
+                return deleteNode.next.storedTask;
+            }
+
+            @Override
+            public void remove() {
+                if(node == first.next) {
+                    throw new IllegalStateException(
+                            "Needs calling of next() iterator method!"
+                    );
+                }
+                deleteNode.next = node;
+                taskAmount--;
+            }
+        };
+    }
+
+    @Override
+    public LinkedTaskList clone() {
+        LinkedTaskList returnObj = new LinkedTaskList();
+        LinkedListPointer addPtr = first.next;
+
+        while(addPtr != null) {
+            returnObj.add(addPtr.storedTask);
+            addPtr = addPtr.next;
+        }
+        return returnObj;
     }
 }
