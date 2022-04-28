@@ -1,13 +1,18 @@
 package ua.edu.sumdu.j2se.kikhtenkoDmytro.tasks;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class ArrayTaskList extends AbstractTaskList {
     /**
      * Amount of added or deleted tasks after which the array memory is changed.
      */
     private final static int RESIZE_INTERVAL = 5;
-
-    private int taskAmount;
     private Task[] taskArr;
+
+    static {
+        type = ListTypes.types.ARRAY;
+    }
 
     public ArrayTaskList() {
         taskArr = new Task[RESIZE_INTERVAL];
@@ -90,5 +95,65 @@ public class ArrayTaskList extends AbstractTaskList {
         }
 
         return taskArr[index];
+    }
+
+    @Override
+    public Iterator<Task> iterator() {
+        Iterator<Task> it = new Iterator<>() {
+            private int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return index < taskAmount;
+            }
+
+            @Override
+            public Task next() {
+                if(index == taskAmount) {
+                    throw new NoSuchElementException(
+                            "Iterator reached last position!"
+                    );
+                }
+                return taskArr[index++];
+            }
+
+            @Override
+            public void remove() {
+                if(index == 0) {
+                    throw new IllegalStateException(
+                            "Needs calling of next() iterator method!"
+                    );
+                }
+
+                index--;
+
+                taskArr[index] = null;
+                taskAmount--;
+
+                if(index != taskAmount) {
+                    System.arraycopy(taskArr, index + 1, taskArr, index,
+                            taskAmount - index);
+                }
+
+                if(taskArr.length - RESIZE_INTERVAL == taskAmount &&
+                        taskAmount != 0) {
+                    Task[] tempArr = new Task[taskAmount];
+
+                    System.arraycopy(taskArr, 0, tempArr, 0, taskAmount);
+                    taskArr = tempArr;
+                }
+            }
+        };
+
+        return it;
+    }
+
+    @Override
+    public ArrayTaskList clone() {
+        ArrayTaskList retObj = new ArrayTaskList();
+        for(int counter = 0; counter < taskAmount; counter++) {
+            retObj.add(taskArr[counter]);
+        }
+        return retObj;
     }
 }
