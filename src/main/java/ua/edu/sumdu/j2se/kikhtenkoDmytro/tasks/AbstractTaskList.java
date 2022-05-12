@@ -1,6 +1,7 @@
 package ua.edu.sumdu.j2se.kikhtenkoDmytro.tasks;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 public abstract class AbstractTaskList implements Iterable<Task>, Cloneable {
     protected int taskAmount;
@@ -12,23 +13,22 @@ public abstract class AbstractTaskList implements Iterable<Task>, Cloneable {
     public abstract void add(Task task);
     public abstract boolean remove(Task task);
     public abstract Task getTask(int index);
-    public AbstractTaskList incoming(int from, int to) {
+
+    public abstract Stream<Task> getStream();
+    public final AbstractTaskList incoming(final int from, final int to) {
         if(from > to) {
             throw new IllegalArgumentException(
                     "Invalid interval parameters!"
             );
         }
 
-        int nextTaskTime;
         AbstractTaskList returnArr = TaskListFactory.createTaskList(type);
 
-        for(Task task : this) {
-            nextTaskTime = task.nextTimeAfter(from);
+        getStream().filter((currentTask) -> {
+                    int nextTime = currentTask.nextTimeAfter(from);
+                    return nextTime != -1 && nextTime < to;}).
+                forEach(returnArr::add);
 
-            if(nextTaskTime != -1 && nextTaskTime < to) {
-                returnArr.add(task);
-            }
-        }
         return returnArr;
     }
 
@@ -47,7 +47,8 @@ public abstract class AbstractTaskList implements Iterable<Task>, Cloneable {
             return false;
         }
 
-        Iterator otherIt = ((AbstractTaskList)otherObject).iterator();
+        Iterator<Task> otherIt = ((AbstractTaskList)otherObject).
+                iterator();
         for(Task thisIt : this) {
             if(!thisIt.equals(otherIt.next())) {
                 return false;

@@ -1,7 +1,9 @@
 package ua.edu.sumdu.j2se.kikhtenkoDmytro.tasks;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 public class ArrayTaskList extends AbstractTaskList {
     /**
@@ -99,7 +101,7 @@ public class ArrayTaskList extends AbstractTaskList {
 
     @Override
     public Iterator<Task> iterator() {
-        Iterator<Task> it = new Iterator<>() {
+        return new Iterator<>() {
             private int index = 0;
 
             @Override
@@ -144,8 +146,6 @@ public class ArrayTaskList extends AbstractTaskList {
                 }
             }
         };
-
-        return it;
     }
 
     @Override
@@ -155,5 +155,10 @@ public class ArrayTaskList extends AbstractTaskList {
             retObj.add(taskArr[counter]);
         }
         return retObj;
+    }
+
+    @Override
+    public Stream<Task> getStream() {
+        return Arrays.stream(taskArr, 0, taskAmount);
     }
 }
