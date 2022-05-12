@@ -15,22 +15,6 @@ public abstract class AbstractTaskList implements Iterable<Task>, Cloneable {
     public abstract Task getTask(int index);
 
     public abstract Stream<Task> getStream();
-    public final AbstractTaskList incoming(final int from, final int to) {
-        if(from > to) {
-            throw new IllegalArgumentException(
-                    "Invalid interval parameters!"
-            );
-        }
-
-        AbstractTaskList returnArr = TaskListFactory.createTaskList(type);
-
-        getStream().filter((currentTask) -> {
-                    int nextTime = currentTask.nextTimeAfter(from);
-                    return nextTime != -1 && nextTime < to;}).
-                forEach(returnArr::add);
-
-        return returnArr;
-    }
 
     @Override
     public boolean equals(Object otherObject) {
