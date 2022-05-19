@@ -3,7 +3,8 @@ package ua.edu.sumdu.j2se.kikhtenkoDmytro.tasks;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
-public abstract class AbstractTaskList implements Iterable<Task>, Cloneable {
+public abstract class AbstractTaskList implements
+        Iterable<Task>, Cloneable {
     protected int taskAmount;
     protected static ListTypes.types type;
 
