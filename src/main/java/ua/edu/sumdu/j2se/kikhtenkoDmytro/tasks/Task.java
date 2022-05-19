@@ -1,5 +1,7 @@
 package ua.edu.sumdu.j2se.kikhtenkoDmytro.tasks;
 
+import java.time.LocalDateTime;
+
 /**
  * Class Task for objects task.
  * @author Kikhtenko Dmytro
@@ -21,12 +23,12 @@ public class Task {
      * If task is repeated ({@link Task#isPeriodical}) stores a time of task start.
      * If task is not repeated stores a time of task completion
      */
-    private int start;
+    private LocalDateTime start;
 
     /**
      * Stores the end time of non-repeated task completion.
      */
-    private int end;
+    private LocalDateTime end;
 
     /**
      * Stores an interval of task repeat.
@@ -43,9 +45,9 @@ public class Task {
      * @param title title of the task
      * @param time time of completion of the task
      * @exception IllegalArgumentException if time parameter has negative value
-     * @see Task#Task(String, int, int, int) constructor for repeated tasks
+     * @see Task#Task(String, LocalDateTime, LocalDateTime, int) constructor for repeated tasks
      */
-    public Task(String title, int time) {
+    public Task(String title, LocalDateTime time) {
         setTitle(title);
         setTime(time);
     }
@@ -57,9 +59,10 @@ public class Task {
      * @param end end time of completion period
      * @param interval interval of task completion
      * @exception IllegalArgumentException if start time more or equal end time or interval is non-positive
-     * @see Task#Task(String, int) constructor for non-repeated tasks
+     * @see Task#Task(String, LocalDateTime) constructor for non-repeated tasks
      */
-    public Task(String title, int start, int end, int interval) {
+    public Task(String title, LocalDateTime start,
+                LocalDateTime end, int interval) {
         setTitle(title);
         setTime(start, end, interval);
     }
@@ -84,7 +87,7 @@ public class Task {
      * Getter for completion time of task.
      * @return start time for repeated task and completion time for non-repeated
      */
-    public int getTime() {
+    public LocalDateTime getTime() {
         return this.start;
     }
 
@@ -108,12 +111,12 @@ public class Task {
      * Setter for completion time of non-repeated task (sets task as non-repeated).
      * @param time completion time for non-repeated task
      * @exception IllegalArgumentException if time parameter has negative value
-     * @see Task#setTime(int, int, int) setter for repeated task
+     * @see Task#setTime(LocalDateTime, LocalDateTime, int) setter for repeated task
      */
-    public void setTime(int time) {
-        if(time < 0) {
+    public void setTime(LocalDateTime time) {
+        if(time == null) {
             throw new IllegalArgumentException(
-                    "Negative time parameter!"
+                    "LocalDateTime parameter has null value!"
             );
         }
 
@@ -130,10 +133,12 @@ public class Task {
      * @param end end time of completion period
      * @param interval interval of task completion
      * @exception IllegalArgumentException if start time more or equal end time or interval is non-positive
-     * @see Task#setTime(int) setter for non-repeated task
+     * @see Task#setTime(LocalDateTime) setter for non-repeated task
      */
-    public void setTime(int start, int end, int interval) {
-        if(start >= end || interval <= 0) {
+    public void setTime(LocalDateTime start, LocalDateTime end,
+                        int interval) {
+        if(start == null || end == null || start.isAfter(end)
+                || start.isEqual(end) || interval <= 0) {
             throw new IllegalArgumentException(
                     "Interval parameters error!"
             );
@@ -152,14 +157,14 @@ public class Task {
      * Getter for start time of repeated task.
      * @return start time for repeated task and time of completion for non-repeated
      */
-    public int getStartTime() {
+    public LocalDateTime getStartTime() {
         return this.start;
     }
 
     /** Getter for end time of repeated task.
      * @return end time for repeated task and time of completion for non-repeated
      */
-    public int getEndTime() {
+    public LocalDateTime getEndTime() {
         if(this.isPeriodical) {
             return this.end;
         } else {
@@ -192,34 +197,33 @@ public class Task {
      * @exception IllegalArgumentException if time parameter has negative value
      * @return time of next task completion after current time. If task is not active returns 0. If task will not run after current time returns 0
      */
-    public int nextTimeAfter(int current) {
-        if(current < 0) {
+    public LocalDateTime nextTimeAfter(LocalDateTime current) {
+        if(current == null) {
             throw new IllegalArgumentException(
-                    "Negative time parameter!"
+                    "LocalDateTime object has null value!"
             );
         }
-
         if(!this.isActive) {
-            return -1;
+            return null;
         }
 
         if(this.isPeriodical) {
-            int nextTime = this.start;
+            LocalDateTime nextTime = this.start;
 
-            while(current >= nextTime) {
-                if(nextTime + this.interval <= this.end) {
-                    nextTime += this.interval;
+            while(!current.isBefore(nextTime)) {
+                if(nextTime.plusSeconds(this.interval).isAfter(this.end)) {
+                    return null;
                 } else {
-                    return -1;
+                    nextTime = nextTime.plusSeconds(this.interval);
                 }
             }
 
             return nextTime;
         } else {
-            if(current < this.start) {
+            if(current.isBefore(this.start)) {
                 return this.start;
             } else {
-                return -1;
+                return null;
             }
         }
     }
@@ -257,8 +261,8 @@ public class Task {
         int result = 0;
 
         result ^= title.hashCode();
-        result ^= start;
-        result ^= end;
+        result ^= start.hashCode();
+        result ^= end.hashCode();
         result += interval;
         if(isActive) {
             result >>= 3;
