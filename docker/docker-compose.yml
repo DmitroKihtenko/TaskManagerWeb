@@ -1,0 +1,50 @@
+services:
+  backend-webserver:
+    image: task-manager-webserver:latest
+    build:
+      context: .
+      target: backend-webserver
+    depends_on:
+      - data-storage
+    environment:
+      DB_URL: "jdbc:oracle:thin:@data-storage:1521:xe"
+    healthcheck:
+      test: curl --insecure -sS https://localhost:8443/health
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - ./volumes/webserver/wars/:/usr/local/tomcat/webapps/
+      - task-manager-server-logs:/usr/local/tomcat/logs/
+      - ./tomcat/ssl/:/ssl/
+    ports:
+      - 8443:8443
+    env_file:
+      - .env
+
+  war-deploy:
+    image: task-manager-webserver:latest
+    build:
+      context: .
+      target: backend-webserver
+    volumes:
+      - ../:/task-manager/
+    command: ["mvn", "package", "-f", "/task-manager/pom.xml"]
+
+  data-storage:
+    image: task-manager-storage:latest
+    build:
+      context: .
+      target: data-storage
+    environment:
+      ORACLE_RANDOM_PASSWORD: "true"
+    ports:
+      - 1521:1521
+    volumes:
+      - task-manager-db-volume:/u01/app/oracle/oradata
+    env_file:
+      - .env
+
+volumes:
+  task-manager-db-volume:
+  task-manager-server-logs:
