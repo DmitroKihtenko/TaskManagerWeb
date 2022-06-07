@@ -1,0 +1,8 @@
+define tm_profile="task_manager"
+define user_name="task_manager"
+define schema="task_manager"
+define user_password="task_manager"
+define space="task_manager_space"
+define temp_space="task_manager_temp_space"
+define space_file="task_manager_space.dba"
+define temp_space_file="task_manager_temp_space.dba"

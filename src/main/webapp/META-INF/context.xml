@@ -1,0 +1,16 @@
+<Context docBase="/usr/local/tomcat/webapps/ROOT"
+         path=""
+         reloadable="true">
+    <Resource auth="Container"
+              name="jdbc/bone-cp-datasource"
+              type="com.jolbox.bonecp.BoneCPDataSource"
+              idleMaxAge="240"
+              idleConnectionTestPeriod="60"
+              partitionCount="3"
+              acquireIncrement="1"
+              maxConnectionsPerPartition="10"
+              minConnectionsPerPartition="3"
+              statementsCacheSize="50"
+              releaseHelperThreads="4"
+              factory="org.apache.naming.factory.BeanFactory" />
+</Context>

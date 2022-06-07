@@ -1,0 +1,6 @@
+@"/container-entrypoint-initdb.d/init/system.sql"
+@"/container-entrypoint-initdb.d/init/variables.sql"
+@"/container-entrypoint-initdb.d/init/profiles.sql"
+@"/container-entrypoint-initdb.d/init/schemas.sql"
+@"/container-entrypoint-initdb.d/init/objects.sql"
+@"/container-entrypoint-initdb.d/init/grants.sql"
