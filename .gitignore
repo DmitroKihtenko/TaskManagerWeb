@@ -1,0 +1,3 @@
+target
+docker/.env
+docker/volumes/webserver/wars/**
