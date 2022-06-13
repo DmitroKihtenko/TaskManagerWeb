@@ -1,5 +1,17 @@
 GRANT UNLIMITED TABLESPACE TO &schema;
 
+CREATE table accounting_log
+(
+    id          INTEGER NOT NULL,
+    date_time   TIMESTAMP NOT NULL,
+    table_name  VARCHAR2(30) NOT NULL,
+    event       VARCHAR2(50) NOT NULL,
+    object      INTEGER NOT NULL,
+    author      VARCHAR2(30) NOT NULL
+);
+
+ALTER table accounting_log ADD CONSTRAINT accounting_log_pk PRIMARY KEY ( id );
+
 CREATE TABLE &schema..task (
     id         INTEGER NOT NULL,
     title      NVARCHAR2(100) NOT NULL,
@@ -30,6 +42,12 @@ ALTER TABLE &schema..task
     ADD CONSTRAINT task_user_fk FOREIGN KEY ( user_data )
         REFERENCES &schema..user_data ( id )
         ON DELETE CASCADE;
+
+CREATE SEQUENCE accounting_log_sequence
+    START WITH 0
+    MINVALUE 0
+    INCREMENT BY 1
+    NOCYCLE;
 
 CREATE SEQUENCE &schema..task_sequence
     START WITH 0
