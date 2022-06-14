@@ -1,5 +1,6 @@
 #!/bin/bash
 
+TABLE_SPACE_HOME=${TABLE_SPACE_HOME:-"/u01/app/oracle/oradata/XE"}
 TM_PROFILE=${TM_USER:-task_manager}
 TM_USER=${TM_USER:-task_manager}
 TM_SCHEMA=${TM_SCHEMA:-$TM_USER}
@@ -23,8 +24,8 @@ main() {
   forward_variable user_password "$TM_PASSWORD"
   forward_variable space "$TM_SPACE"
   forward_variable temp_space "$TM_TEMP_SPACE"
-  forward_variable space_file "'${TM_SPACE}.dba'"
-  forward_variable temp_space_file "'${TM_TEMP_SPACE}.dba'"
+  forward_variable space_file "'${TABLE_SPACE_HOME}/${TM_SPACE}.dba'"
+  forward_variable temp_space_file "'${TABLE_SPACE_HOME}/${TM_TEMP_SPACE}.dba'"
 }
 
 main
