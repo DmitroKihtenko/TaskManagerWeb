@@ -37,7 +37,7 @@ services:
       context: .
       target: data-storage
     environment:
-      ORACLE_RANDOM_PASSWORD: "true"
+      ORACLE_PASSWORD: "admin_user_password"
     ports:
       - 1521:1521
     volumes:
