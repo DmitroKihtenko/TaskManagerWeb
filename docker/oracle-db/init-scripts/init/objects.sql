@@ -4,10 +4,10 @@ CREATE table accounting_log
 (
     id          INTEGER NOT NULL,
     date_time   TIMESTAMP NOT NULL,
-    table_name  VARCHAR2(30) NOT NULL,
-    event       VARCHAR2(50) NOT NULL,
+    table_name  NVARCHAR2(30) NOT NULL,
+    event       NVARCHAR2(50) NOT NULL,
     object      INTEGER NOT NULL,
-    author      VARCHAR2(30) NOT NULL
+    author      NVARCHAR2(30) NOT NULL
 );
 
 ALTER table accounting_log ADD CONSTRAINT accounting_log_pk PRIMARY KEY ( id );
@@ -29,7 +29,7 @@ ALTER TABLE &schema..task ADD CONSTRAINT user_task_title_unique UNIQUE ( title, 
 CREATE TABLE &schema..user_data (
     id         INTEGER NOT NULL,
     name       NVARCHAR2(24) NOT NULL,
-    password   NVARCHAR2(64) NOT NULL,
+    password   NVARCHAR2(60) NOT NULL,
     enabled    CHAR(1) NOT NULL,
     metadata   RAW(1000) NOT NULL
 );
